@@ -80,7 +80,7 @@ func renderStateNodes(b *svgBuilder, l *layout.Layout, th *theme.Theme, cfg *con
 func renderStartState(b *svgBuilder, n *layout.NodeLayout, th *theme.Theme) {
 	cx := n.X
 	cy := n.Y
-	r := float32(8)
+	r := n.Width / 2
 	b.circle(cx, cy, r,
 		"fill", th.StateStartEnd,
 		"stroke", th.StateStartEnd,
@@ -93,16 +93,18 @@ func renderStartState(b *svgBuilder, n *layout.NodeLayout, th *theme.Theme) {
 func renderEndState(b *svgBuilder, n *layout.NodeLayout, th *theme.Theme) {
 	cx := n.X
 	cy := n.Y
+	outerR := n.Width / 2
+	innerR := outerR * 0.6
 
 	// Outer circle (stroke only).
-	b.circle(cx, cy, 10,
+	b.circle(cx, cy, outerR,
 		"fill", "none",
 		"stroke", th.StateStartEnd,
 		"stroke-width", "1.5",
 	)
 
 	// Inner filled circle.
-	b.circle(cx, cy, 6,
+	b.circle(cx, cy, innerR,
 		"fill", th.StateStartEnd,
 		"stroke", th.StateStartEnd,
 		"stroke-width", "1",

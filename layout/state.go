@@ -69,12 +69,13 @@ func sizeStateNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 				}
 				continue
 			case ir.StateChoice:
+				choiceSize := cfg.State.StartEndRadius*2 + 24
 				nodes[id] = &NodeLayout{
 					ID:     id,
 					Label:  TextBlock{FontSize: th.FontSize},
 					Shape:  ir.Diamond,
-					Width:  40,
-					Height: 40,
+					Width:  choiceSize,
+					Height: choiceSize,
 				}
 				continue
 			}
