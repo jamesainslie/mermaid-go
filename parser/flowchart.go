@@ -3,7 +3,7 @@ package parser
 import (
 	"strings"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 // parseFlowchart parses a Mermaid flowchart/graph diagram.

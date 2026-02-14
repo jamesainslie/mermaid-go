@@ -1,6 +1,6 @@
 package layout
 
-import "github.com/yaklabco/mermaid-go/ir"
+import "github.com/jamesainslie/mermaid-go/ir"
 
 // routeEdges computes simple L-shaped polyline routes for all edges.
 // For LR direction: start at right side of source, end at left side of target.

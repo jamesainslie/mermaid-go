@@ -3,7 +3,7 @@ package parser
 import (
 	"strings"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 // ParseOutput holds the result of parsing a Mermaid diagram.

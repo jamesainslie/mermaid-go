@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/yaklabco/mermaid-go/config"
-	"github.com/yaklabco/mermaid-go/ir"
-	"github.com/yaklabco/mermaid-go/layout"
-	"github.com/yaklabco/mermaid-go/theme"
+	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/layout"
+	"github.com/jamesainslie/mermaid-go/theme"
 )
 
 func simpleLayout() *layout.Layout {

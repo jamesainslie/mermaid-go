@@ -3,7 +3,7 @@ package parser
 import (
 	"testing"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 func TestDetectDiagramKind(t *testing.T) {

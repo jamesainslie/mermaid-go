@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 var (

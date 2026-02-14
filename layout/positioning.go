@@ -1,8 +1,8 @@
 package layout
 
 import (
-	"github.com/yaklabco/mermaid-go/config"
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 // positionNodes assigns X, Y coordinates to each node based on its rank,

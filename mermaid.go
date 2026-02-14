@@ -8,9 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yaklabco/mermaid-go/layout"
-	"github.com/yaklabco/mermaid-go/parser"
-	"github.com/yaklabco/mermaid-go/render"
+	"github.com/jamesainslie/mermaid-go/layout"
+	"github.com/jamesainslie/mermaid-go/parser"
+	"github.com/jamesainslie/mermaid-go/render"
 )
 
 // Render parses a Mermaid diagram string and returns SVG output using default options.

@@ -3,7 +3,7 @@
 // positioned nodes, routed edges, and a bounding box.
 package layout
 
-import "github.com/yaklabco/mermaid-go/ir"
+import "github.com/jamesainslie/mermaid-go/ir"
 
 // Layout holds the fully computed positions and dimensions for a diagram.
 type Layout struct {

@@ -3,7 +3,7 @@ package layout
 import (
 	"sort"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 // computeRanks assigns an integer rank to each node using a modified Kahn's

@@ -1,8 +1,8 @@
 package mermaid
 
 import (
-	"github.com/yaklabco/mermaid-go/config"
-	"github.com/yaklabco/mermaid-go/theme"
+	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/theme"
 )
 
 // Options configures Mermaid rendering. Zero value uses Modern theme and default layout.

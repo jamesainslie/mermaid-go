@@ -3,7 +3,7 @@ package layout
 import (
 	"testing"
 
-	"github.com/yaklabco/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/ir"
 )
 
 func edge(from, to string) *ir.Edge {

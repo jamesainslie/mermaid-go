@@ -1,8 +1,8 @@
 package render
 
 import (
-	"github.com/yaklabco/mermaid-go/ir"
-	"github.com/yaklabco/mermaid-go/layout"
+	"github.com/jamesainslie/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/layout"
 )
 
 // renderNodeShape renders the SVG shape for a node and its centered text label.

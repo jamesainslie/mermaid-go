@@ -1,4 +1,4 @@
-module github.com/yaklabco/mermaid-go
+module github.com/jamesainslie/mermaid-go
 
 go 1.24.0
 

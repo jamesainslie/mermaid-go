@@ -634,7 +634,7 @@ package parser
 import (
     "testing"
 
-    "github.com/yaklabco/mermaid-go/ir"
+    "github.com/jamesainslie/mermaid-go/ir"
 )
 
 func TestDetectDiagramKind(t *testing.T) {
@@ -671,7 +671,7 @@ package parser
 import (
     "testing"
 
-    "github.com/yaklabco/mermaid-go/ir"
+    "github.com/jamesainslie/mermaid-go/ir"
 )
 
 func TestParseFlowchartSimpleChain(t *testing.T) {
@@ -850,7 +850,7 @@ package layout
 import (
     "testing"
 
-    "github.com/yaklabco/mermaid-go/ir"
+    "github.com/jamesainslie/mermaid-go/ir"
 )
 
 func edge(from, to string) *ir.Edge {
@@ -909,9 +909,9 @@ package layout
 import (
     "testing"
 
-    "github.com/yaklabco/mermaid-go/config"
-    "github.com/yaklabco/mermaid-go/ir"
-    "github.com/yaklabco/mermaid-go/theme"
+    "github.com/jamesainslie/mermaid-go/config"
+    "github.com/jamesainslie/mermaid-go/ir"
+    "github.com/jamesainslie/mermaid-go/theme"
 )
 
 func TestComputeLayoutSimple(t *testing.T) {
@@ -1000,10 +1000,10 @@ import (
     "strings"
     "testing"
 
-    "github.com/yaklabco/mermaid-go/config"
-    "github.com/yaklabco/mermaid-go/ir"
-    "github.com/yaklabco/mermaid-go/layout"
-    "github.com/yaklabco/mermaid-go/theme"
+    "github.com/jamesainslie/mermaid-go/config"
+    "github.com/jamesainslie/mermaid-go/ir"
+    "github.com/jamesainslie/mermaid-go/layout"
+    "github.com/jamesainslie/mermaid-go/theme"
 )
 
 func simpleLayout() *layout.Layout {
@@ -1185,11 +1185,11 @@ import (
     "fmt"
     "time"
 
-    "github.com/yaklabco/mermaid-go/config"
-    "github.com/yaklabco/mermaid-go/layout"
-    "github.com/yaklabco/mermaid-go/parser"
-    "github.com/yaklabco/mermaid-go/render"
-    "github.com/yaklabco/mermaid-go/theme"
+    "github.com/jamesainslie/mermaid-go/config"
+    "github.com/jamesainslie/mermaid-go/layout"
+    "github.com/jamesainslie/mermaid-go/parser"
+    "github.com/jamesainslie/mermaid-go/render"
+    "github.com/jamesainslie/mermaid-go/theme"
 )
 
 func Render(input string) (string, error) {
@@ -1241,8 +1241,8 @@ func RenderWithTiming(input string, opts Options) (*Result, error) {
 package mermaid
 
 import (
-    "github.com/yaklabco/mermaid-go/config"
-    "github.com/yaklabco/mermaid-go/theme"
+    "github.com/jamesainslie/mermaid-go/config"
+    "github.com/jamesainslie/mermaid-go/theme"
 )
 
 type Options struct {

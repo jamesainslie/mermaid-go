@@ -2,9 +2,9 @@
 package render
 
 import (
-	"github.com/yaklabco/mermaid-go/config"
-	"github.com/yaklabco/mermaid-go/layout"
-	"github.com/yaklabco/mermaid-go/theme"
+	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/layout"
+	"github.com/jamesainslie/mermaid-go/theme"
 )
 
 // RenderSVG produces an SVG string from a computed layout, theme, and config.
