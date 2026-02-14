@@ -47,6 +47,10 @@ const (
 type EdgeArrowhead int
 
 const (
-	OpenTriangle EdgeArrowhead = iota
-	ClassDependency
+	OpenTriangle    EdgeArrowhead = iota
+	ClassDependency               // dependency
+	ClosedTriangle                // inheritance, realization
+	FilledDiamond                 // composition
+	OpenDiamond                   // aggregation
+	Lollipop                      // provided interface
 )
