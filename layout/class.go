@@ -14,19 +14,14 @@ func computeClassLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layou
 	nodes, compartments := sizeClassNodes(g, measurer, th, cfg)
 
 	// Reuse Sugiyama pipeline.
-	nodeIDs := sortedNodeIDs(g.Nodes, g.NodeOrder)
-	ranks := computeRanks(nodeIDs, g.Edges, g.NodeOrder)
-	layers := orderRankNodes(ranks, g.Edges, cfg.Flowchart.OrderPasses)
-	positionNodes(layers, nodes, g.Direction, cfg)
-	edges := routeEdges(g.Edges, nodes, g.Direction)
-	width, height := computeBoundingBox(nodes)
+	r := runSugiyama(g, nodes, cfg)
 
 	return &Layout{
 		Kind:   g.Kind,
 		Nodes:  nodes,
-		Edges:  edges,
-		Width:  width,
-		Height: height,
+		Edges:  r.Edges,
+		Width:  r.Width,
+		Height: r.Height,
 		Diagram: ClassData{
 			Compartments: compartments,
 			Members:      g.Members,
@@ -42,6 +37,10 @@ func sizeClassNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 	padH := cfg.Padding.NodeHorizontal
 	padV := cfg.Padding.NodeVertical
 	lineH := th.FontSize * cfg.LabelLineHeight
+	memberFontSize := cfg.Class.MemberFontSize
+	compartmentPadY := cfg.Class.CompartmentPadY
+
+	memberLineH := memberFontSize * cfg.LabelLineHeight
 
 	for id, node := range g.Nodes {
 		members := g.Members[id]
@@ -71,14 +70,14 @@ func sizeClassNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 		maxW := headerW
 		for _, attr := range members.Attributes {
 			text := attr.Visibility.Symbol() + attr.Type + " " + attr.Name
-			w := measurer.Width(text, th.FontSize, th.FontFamily)
+			w := measurer.Width(text, memberFontSize, th.FontFamily)
 			if w > maxW {
 				maxW = w
 			}
-			attrH += lineH
+			attrH += memberLineH
 		}
 		if len(members.Attributes) > 0 {
-			attrH += padV // section padding
+			attrH += compartmentPadY // section padding
 		}
 
 		// Measure methods.
@@ -88,14 +87,14 @@ func sizeClassNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 			if meth.Type != "" {
 				text += " : " + meth.Type
 			}
-			w := measurer.Width(text, th.FontSize, th.FontFamily)
+			w := measurer.Width(text, memberFontSize, th.FontFamily)
 			if w > maxW {
 				maxW = w
 			}
-			methH += lineH
+			methH += memberLineH
 		}
 		if len(members.Methods) > 0 {
-			methH += padV
+			methH += compartmentPadY
 		}
 
 		totalW := maxW + 2*padH

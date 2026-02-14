@@ -12,19 +12,14 @@ func computeERLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 
 	nodes, entityDims := sizeERNodes(g, measurer, th, cfg)
 
-	nodeIDs := sortedNodeIDs(g.Nodes, g.NodeOrder)
-	ranks := computeRanks(nodeIDs, g.Edges, g.NodeOrder)
-	layers := orderRankNodes(ranks, g.Edges, cfg.Flowchart.OrderPasses)
-	positionNodes(layers, nodes, g.Direction, cfg)
-	edges := routeEdges(g.Edges, nodes, g.Direction)
-	width, height := computeBoundingBox(nodes)
+	r := runSugiyama(g, nodes, cfg)
 
 	return &Layout{
 		Kind:    g.Kind,
 		Nodes:   nodes,
-		Edges:   edges,
-		Width:   width,
-		Height:  height,
+		Edges:   r.Edges,
+		Width:   r.Width,
+		Height:  r.Height,
 		Diagram: ERData{EntityDims: entityDims, Entities: g.Entities},
 	}
 }
@@ -36,6 +31,8 @@ func sizeERNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme, c
 	padH := cfg.Padding.NodeHorizontal
 	padV := cfg.Padding.NodeVertical
 	lineH := th.FontSize * cfg.LabelLineHeight
+	colPad := cfg.ER.ColumnPadding
+	rowH := cfg.ER.AttributeRowHeight
 
 	for id, node := range g.Nodes {
 		entity := g.Entities[id]
@@ -75,12 +72,12 @@ func sizeERNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme, c
 		}
 
 		rowCount := len(entity.Attributes)
-		bodyH := lineH * float32(rowCount)
+		bodyH := rowH * float32(rowCount)
 		if rowCount > 0 {
 			bodyH += padV
 		}
 
-		rowW := maxTypeW + maxNameW + maxKeyW + 3*padH // 3 columns with padding
+		rowW := maxTypeW + maxNameW + maxKeyW + 3*colPad // 3 columns with padding
 		totalW := rowW + 2*padH
 		if headerW+2*padH > totalW {
 			totalW = headerW + 2*padH

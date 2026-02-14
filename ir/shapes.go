@@ -34,7 +34,8 @@ const (
 type EdgeDecoration int
 
 const (
-	DecCircle EdgeDecoration = iota
+	DecNone EdgeDecoration = iota // zero value = no decoration
+	DecCircle
 	DecCross
 	DecDiamond
 	DecDiamondFilled

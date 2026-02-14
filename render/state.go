@@ -175,61 +175,19 @@ func renderCompositeState(b *svgBuilder, n *layout.NodeLayout, innerLayout *layo
 // renderInnerLayout renders a nested layout at a given offset by translating
 // all node and edge coordinates.
 func renderInnerLayout(b *svgBuilder, l *layout.Layout, th *theme.Theme, cfg *config.Layout, offsetX, offsetY float32) {
-	// Use an SVG <g> element with a transform for the offset.
 	b.openTag("g",
 		"transform", "translate("+fmtFloat(offsetX)+","+fmtFloat(offsetY)+")",
 	)
 
-	// Determine the state data for inner layout if available.
-	sd, isState := l.Diagram.(layout.StateData)
-
 	// Render edges.
 	renderEdges(b, l, th)
 
-	// Render nodes sorted by ID for deterministic output.
-	ids := make([]string, 0, len(l.Nodes))
-	for id := range l.Nodes {
-		ids = append(ids, id)
-	}
-	sort.Strings(ids)
-
-	for _, id := range ids {
-		n := l.Nodes[id]
-
-		if isState {
-			if strings.HasPrefix(id, "__start__") {
-				renderStartState(b, n, th)
-				continue
-			}
-			if strings.HasPrefix(id, "__end__") {
-				renderEndState(b, n, th)
-				continue
-			}
-			if ann, ok := sd.Annotations[id]; ok {
-				switch ann {
-				case ir.StateFork, ir.StateJoin:
-					renderForkJoinState(b, n, th)
-					continue
-				case ir.StateChoice:
-					renderChoiceState(b, n, th)
-					continue
-				}
-			}
-			if cs, ok := sd.CompositeStates[id]; ok {
-				if innerLayout, hasInner := sd.InnerLayouts[id]; hasInner {
-					renderCompositeState(b, n, innerLayout, cs.Label, th, cfg)
-					continue
-				}
-			}
-			desc := sd.Descriptions[id]
-			renderRegularState(b, n, desc, th)
-		} else {
-			// Fallback for non-state inner layouts.
-			fill := th.PrimaryColor
-			stroke := th.PrimaryBorderColor
-			textColor := th.PrimaryTextColor
-			renderNodeShape(b, n, fill, stroke, textColor)
-		}
+	// Render nodes — delegate to appropriate renderer based on diagram type.
+	switch d := l.Diagram.(type) {
+	case layout.StateData:
+		renderStateNodes(b, l, th, cfg, &d)
+	default:
+		renderNodes(b, l, th)
 	}
 
 	b.closeTag("g")

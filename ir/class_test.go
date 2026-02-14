@@ -21,29 +21,6 @@ func TestVisibilitySymbol(t *testing.T) {
 	}
 }
 
-func TestClassMemberIsMethod(t *testing.T) {
-	attr := ClassMember{
-		Name:       "name",
-		Type:       "string",
-		Visibility: VisPrivate,
-		IsMethod:   false,
-	}
-	if attr.IsMethod {
-		t.Error("attribute should not be a method")
-	}
-
-	method := ClassMember{
-		Name:       "getName",
-		Type:       "string",
-		Params:     "",
-		Visibility: VisPublic,
-		IsMethod:   true,
-	}
-	if !method.IsMethod {
-		t.Error("method should be a method")
-	}
-}
-
 func TestClassMembersGrouping(t *testing.T) {
 	members := &ClassMembers{
 		Attributes: []ClassMember{
@@ -75,38 +52,6 @@ func TestClassMembersGrouping(t *testing.T) {
 		if !m.IsMethod {
 			t.Errorf("method %q should be a method", m.Name)
 		}
-	}
-}
-
-func TestClassMemberClassifier(t *testing.T) {
-	m := ClassMember{
-		Name:       "instance",
-		Type:       "string",
-		Classifier: ClassifierNone,
-	}
-	if m.Classifier != ClassifierNone {
-		t.Errorf("Classifier = %v, want ClassifierNone", m.Classifier)
-	}
-
-	m.Classifier = ClassifierAbstract
-	if m.Classifier != ClassifierAbstract {
-		t.Errorf("Classifier = %v, want ClassifierAbstract", m.Classifier)
-	}
-
-	m.Classifier = ClassifierStatic
-	if m.Classifier != ClassifierStatic {
-		t.Errorf("Classifier = %v, want ClassifierStatic", m.Classifier)
-	}
-}
-
-func TestClassMemberGeneric(t *testing.T) {
-	m := ClassMember{
-		Name:    "items",
-		Type:    "List",
-		Generic: "T",
-	}
-	if m.Generic != "T" {
-		t.Errorf("Generic = %q, want %q", m.Generic, "T")
 	}
 }
 

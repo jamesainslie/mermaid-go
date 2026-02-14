@@ -14,19 +14,14 @@ func computeStateLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layou
 	// Size state nodes. Special handling for __start__/__end__/fork/choice.
 	nodes := sizeStateNodes(g, measurer, th, cfg, innerLayouts)
 
-	nodeIDs := sortedNodeIDs(g.Nodes, g.NodeOrder)
-	ranks := computeRanks(nodeIDs, g.Edges, g.NodeOrder)
-	layers := orderRankNodes(ranks, g.Edges, cfg.Flowchart.OrderPasses)
-	positionNodes(layers, nodes, g.Direction, cfg)
-	edges := routeEdges(g.Edges, nodes, g.Direction)
-	width, height := computeBoundingBox(nodes)
+	r := runSugiyama(g, nodes, cfg)
 
 	return &Layout{
 		Kind:   g.Kind,
 		Nodes:  nodes,
-		Edges:  edges,
-		Width:  width,
-		Height: height,
+		Edges:  r.Edges,
+		Width:  r.Width,
+		Height: r.Height,
 		Diagram: StateData{
 			InnerLayouts:    innerLayouts,
 			Descriptions:    g.StateDescriptions,
@@ -46,7 +41,7 @@ func sizeStateNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 	for id, node := range g.Nodes {
 		// Special nodes: __start__ and __end__ are small circles.
 		if id == "__start__" || id == "__end__" {
-			size := float32(20)
+			size := cfg.State.StartEndRadius*2 + 4
 			shape := ir.Circle
 			if id == "__end__" {
 				shape = ir.DoubleCircle
@@ -69,8 +64,8 @@ func sizeStateNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 					ID:     id,
 					Label:  TextBlock{FontSize: th.FontSize},
 					Shape:  ir.ForkJoin,
-					Width:  80,
-					Height: 6,
+					Width:  cfg.State.ForkBarWidth,
+					Height: cfg.State.ForkBarHeight,
 				}
 				continue
 			case ir.StateChoice:
@@ -97,11 +92,11 @@ func sizeStateNodes(g *ir.Graph, measurer *textmetrics.Measurer, th *theme.Theme
 			innerW := innerLayout.Width
 			innerH := innerLayout.Height
 
-			totalW := innerW + 2*padH
-			if labelW+2*padH > totalW {
-				totalW = labelW + 2*padH
+			totalW := innerW + 2*cfg.State.CompositePadding
+			if labelW+2*cfg.State.CompositePadding > totalW {
+				totalW = labelW + 2*cfg.State.CompositePadding
 			}
-			totalH := labelH + innerH + padV
+			totalH := labelH + innerH + cfg.State.CompositePadding
 
 			nodes[id] = &NodeLayout{
 				ID:     id,

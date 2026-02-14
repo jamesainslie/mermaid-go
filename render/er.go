@@ -112,7 +112,7 @@ func renderEntityBox(b *svgBuilder, n *layout.NodeLayout, entity *ir.Entity, dim
 	headerTextY := y + headerH/2 + th.FontSize*0.35
 	b.text(x+w/2, headerTextY, displayName,
 		"text-anchor", "middle",
-		"fill", "#FFFFFF",
+		"fill", th.PrimaryTextColor,
 		"font-size", fmtFloat(th.FontSize),
 		"font-weight", "bold",
 	)
