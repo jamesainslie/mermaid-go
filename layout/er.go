@@ -25,7 +25,7 @@ func computeERLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 		Edges:   edges,
 		Width:   width,
 		Height:  height,
-		Diagram: ERData{EntityDims: entityDims},
+		Diagram: ERData{EntityDims: entityDims, Entities: g.Entities},
 	}
 }
 

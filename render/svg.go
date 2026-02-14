@@ -40,6 +40,12 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 	switch l.Diagram.(type) {
 	case layout.GraphData:
 		renderGraph(&b, l, th, cfg)
+	case layout.ClassData:
+		renderClass(&b, l, th, cfg)
+	case layout.ERData:
+		renderER(&b, l, th, cfg)
+	case layout.StateData:
+		renderState(&b, l, th, cfg)
 	default:
 		// For other diagram types, still render graph as a fallback.
 		renderGraph(&b, l, th, cfg)

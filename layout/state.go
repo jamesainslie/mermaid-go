@@ -22,12 +22,17 @@ func computeStateLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layou
 	width, height := computeBoundingBox(nodes)
 
 	return &Layout{
-		Kind:    g.Kind,
-		Nodes:   nodes,
-		Edges:   edges,
-		Width:   width,
-		Height:  height,
-		Diagram: StateData{InnerLayouts: innerLayouts},
+		Kind:   g.Kind,
+		Nodes:  nodes,
+		Edges:  edges,
+		Width:  width,
+		Height: height,
+		Diagram: StateData{
+			InnerLayouts:    innerLayouts,
+			Descriptions:    g.StateDescriptions,
+			Annotations:     g.StateAnnotations,
+			CompositeStates: g.CompositeStates,
+		},
 	}
 }
 

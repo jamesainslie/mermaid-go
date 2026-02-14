@@ -22,12 +22,16 @@ func computeClassLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layou
 	width, height := computeBoundingBox(nodes)
 
 	return &Layout{
-		Kind:    g.Kind,
-		Nodes:   nodes,
-		Edges:   edges,
-		Width:   width,
-		Height:  height,
-		Diagram: ClassData{Compartments: compartments},
+		Kind:   g.Kind,
+		Nodes:  nodes,
+		Edges:  edges,
+		Width:  width,
+		Height: height,
+		Diagram: ClassData{
+			Compartments: compartments,
+			Members:      g.Members,
+			Annotations:  g.Annotations,
+		},
 	}
 }
 

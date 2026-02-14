@@ -29,14 +29,16 @@ type NodeLayout struct {
 
 // EdgeLayout holds the route, label, and style of a single edge.
 type EdgeLayout struct {
-	From        string
-	To          string
-	Label       *TextBlock
-	Points      [][2]float32
-	LabelAnchor [2]float32
-	Style       ir.EdgeStyle
-	ArrowStart  bool
-	ArrowEnd    bool
+	From           string
+	To             string
+	Label          *TextBlock
+	Points         [][2]float32
+	LabelAnchor    [2]float32
+	Style          ir.EdgeStyle
+	ArrowStart     bool
+	ArrowEnd       bool
+	ArrowStartKind *ir.EdgeArrowhead
+	ArrowEndKind   *ir.EdgeArrowhead
 }
 
 // SubgraphLayout holds the position and size of a subgraph container.
@@ -69,6 +71,8 @@ func (GraphData) diagramData() {}
 // ClassData holds class-diagram-specific layout data.
 type ClassData struct {
 	Compartments map[string]ClassCompartment
+	Members      map[string]*ir.ClassMembers
+	Annotations  map[string]string
 }
 
 func (ClassData) diagramData() {}
@@ -83,6 +87,7 @@ type ClassCompartment struct {
 // ERData holds ER-diagram-specific layout data.
 type ERData struct {
 	EntityDims map[string]EntityDimensions
+	Entities   map[string]*ir.Entity
 }
 
 func (ERData) diagramData() {}
@@ -98,7 +103,10 @@ type EntityDimensions struct {
 
 // StateData holds state-diagram-specific layout data.
 type StateData struct {
-	InnerLayouts map[string]*Layout
+	InnerLayouts    map[string]*Layout
+	Descriptions    map[string]string
+	Annotations     map[string]ir.StateAnnotation
+	CompositeStates map[string]*ir.CompositeState
 }
 
 func (StateData) diagramData() {}
