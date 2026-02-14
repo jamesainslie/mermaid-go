@@ -13,6 +13,12 @@ func ComputeLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 	switch g.Kind {
 	case ir.Flowchart:
 		return computeGraphLayout(g, th, cfg)
+	case ir.Class:
+		return computeClassLayout(g, th, cfg)
+	case ir.Er:
+		return computeERLayout(g, th, cfg)
+	case ir.State:
+		return computeStateLayout(g, th, cfg)
 	default:
 		// For unsupported diagram kinds, return a minimal layout.
 		return computeGraphLayout(g, th, cfg)

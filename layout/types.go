@@ -65,3 +65,40 @@ type DiagramData interface {
 type GraphData struct{}
 
 func (GraphData) diagramData() {}
+
+// ClassData holds class-diagram-specific layout data.
+type ClassData struct {
+	Compartments map[string]ClassCompartment
+}
+
+func (ClassData) diagramData() {}
+
+// ClassCompartment stores section dimensions for UML class boxes.
+type ClassCompartment struct {
+	HeaderHeight    float32
+	AttributeHeight float32
+	MethodHeight    float32
+}
+
+// ERData holds ER-diagram-specific layout data.
+type ERData struct {
+	EntityDims map[string]EntityDimensions
+}
+
+func (ERData) diagramData() {}
+
+// EntityDimensions stores column widths for entity rendering.
+type EntityDimensions struct {
+	TypeColWidth float32
+	NameColWidth float32
+	KeyColWidth  float32
+	HeaderHeight float32
+	RowCount     int
+}
+
+// StateData holds state-diagram-specific layout data.
+type StateData struct {
+	InnerLayouts map[string]*Layout
+}
+
+func (StateData) diagramData() {}
