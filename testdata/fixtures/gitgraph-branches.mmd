@@ -1,0 +1,12 @@
+gitGraph
+    commit id: "init"
+    branch feature order: 1
+    branch bugfix order: 2
+    checkout feature
+    commit id: "feat1"
+    commit id: "feat2"
+    checkout bugfix
+    commit id: "fix1"
+    checkout main
+    merge feature
+    merge bugfix tag: "v2.0"

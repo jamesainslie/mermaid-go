@@ -422,3 +422,108 @@ func TestRenderQuadrantMinimalFixture(t *testing.T) {
 		t.Error("missing Point B")
 	}
 }
+
+func TestRenderTimelineBasicFixture(t *testing.T) {
+	input := readFixture(t, "timeline-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "History of Social Media") {
+		t.Error("missing title")
+	}
+	if !strings.Contains(svg, "LinkedIn") {
+		t.Error("missing event LinkedIn")
+	}
+	if !strings.Contains(svg, "Facebook") {
+		t.Error("missing event Facebook")
+	}
+}
+
+func TestRenderTimelineSectionsFixture(t *testing.T) {
+	input := readFixture(t, "timeline-sections.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "Research") {
+		t.Error("missing event Research")
+	}
+	if !strings.Contains(svg, "Development") {
+		t.Error("missing event Development")
+	}
+}
+
+func TestRenderGanttBasicFixture(t *testing.T) {
+	input := readFixture(t, "gantt-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "A Gantt Diagram") {
+		t.Error("missing title")
+	}
+	if !strings.Contains(svg, "Research") {
+		t.Error("missing task Research")
+	}
+	if !strings.Contains(svg, "Backend") {
+		t.Error("missing task Backend")
+	}
+}
+
+func TestRenderGanttDependenciesFixture(t *testing.T) {
+	input := readFixture(t, "gantt-dependencies.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "Sprint Plan") {
+		t.Error("missing title")
+	}
+	if !strings.Contains(svg, "Implement") {
+		t.Error("missing task Implement")
+	}
+}
+
+func TestRenderGitGraphBasicFixture(t *testing.T) {
+	input := readFixture(t, "gitgraph-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "v1.0") {
+		t.Error("missing tag v1.0")
+	}
+	if !strings.Contains(svg, "<circle") {
+		t.Error("missing commit circles")
+	}
+	if !strings.Contains(svg, "main") {
+		t.Error("missing branch label main")
+	}
+}
+
+func TestRenderGitGraphBranchesFixture(t *testing.T) {
+	input := readFixture(t, "gitgraph-branches.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "v2.0") {
+		t.Error("missing tag v2.0")
+	}
+	if !strings.Contains(svg, "feature") {
+		t.Error("missing branch label feature")
+	}
+	if !strings.Contains(svg, "bugfix") {
+		t.Error("missing branch label bugfix")
+	}
+}
