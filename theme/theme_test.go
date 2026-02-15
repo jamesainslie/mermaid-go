@@ -37,3 +37,29 @@ func TestModernThemeHasClassColors(t *testing.T) {
 		t.Error("EntityHeaderBg empty")
 	}
 }
+
+func TestModernPieColors(t *testing.T) {
+	th := Modern()
+	if len(th.PieColors) < 8 {
+		t.Errorf("PieColors = %d, want >= 8", len(th.PieColors))
+	}
+}
+
+func TestModernQuadrantFills(t *testing.T) {
+	th := Modern()
+	if th.QuadrantFill1 == "" {
+		t.Error("QuadrantFill1 is empty")
+	}
+	if th.QuadrantFill2 == "" {
+		t.Error("QuadrantFill2 is empty")
+	}
+	if th.QuadrantFill3 == "" {
+		t.Error("QuadrantFill3 is empty")
+	}
+	if th.QuadrantFill4 == "" {
+		t.Error("QuadrantFill4 is empty")
+	}
+	if th.QuadrantPointFill == "" {
+		t.Error("QuadrantPointFill is empty")
+	}
+}

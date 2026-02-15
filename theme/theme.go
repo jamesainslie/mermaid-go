@@ -50,6 +50,14 @@ type Theme struct {
 	PieOuterStrokeWidth float32
 	PieOuterStrokeColor string
 	PieOpacity          float32
+	PieColors           []string
+
+	// Quadrant chart colors
+	QuadrantFill1     string
+	QuadrantFill2     string
+	QuadrantFill3     string
+	QuadrantFill4     string
+	QuadrantPointFill string
 
 	// Class diagram colors
 	ClassHeaderBg string
@@ -122,6 +130,16 @@ func Modern() *Theme {
 		PieOuterStrokeWidth: 2,
 		PieOuterStrokeColor: "#3B6492",
 		PieOpacity:          0.85,
+		PieColors: []string{
+			"#4C78A8", "#72B7B2", "#EECA3B", "#F58518",
+			"#E45756", "#54A24B", "#B279A2", "#FF9DA6",
+		},
+
+		QuadrantFill1:     "#E8EFF5",
+		QuadrantFill2:     "#F0F4F8",
+		QuadrantFill3:     "#F5F5F5",
+		QuadrantFill4:     "#FFF8E1",
+		QuadrantPointFill: "#4C78A8",
 
 		ClassHeaderBg: "#4C78A8",
 		ClassBodyBg:   "#F0F4F8",
@@ -192,6 +210,16 @@ func MermaidDefault() *Theme {
 		PieOuterStrokeWidth: 2,
 		PieOuterStrokeColor: "#999",
 		PieOpacity:          0.7,
+		PieColors: []string{
+			"#4C78A8", "#48A9A6", "#E4E36A", "#F4A261",
+			"#E76F51", "#7FB069", "#D08AC0", "#F7B7A3",
+		},
+
+		QuadrantFill1:     "#f0ece8",
+		QuadrantFill2:     "#e8f0e8",
+		QuadrantFill3:     "#f0f0f0",
+		QuadrantFill4:     "#ece8f0",
+		QuadrantPointFill: "#4C78A8",
 
 		ClassHeaderBg: "#ECECFF",
 		ClassBodyBg:   "#FFFFFF",

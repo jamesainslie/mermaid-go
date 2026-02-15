@@ -14,6 +14,8 @@ type Layout struct {
 	Sequence             SequenceConfig
 	Kanban               KanbanConfig
 	Packet               PacketConfig
+	Pie                  PieConfig
+	Quadrant             QuadrantConfig
 }
 
 // FlowchartConfig holds flowchart-specific layout options.
@@ -81,6 +83,26 @@ type PacketConfig struct {
 	PaddingY   float32
 }
 
+// PieConfig holds pie chart layout options.
+type PieConfig struct {
+	Radius       float32
+	InnerRadius  float32
+	TextPosition float32
+	PaddingX     float32
+	PaddingY     float32
+}
+
+// QuadrantConfig holds quadrant chart layout options.
+type QuadrantConfig struct {
+	ChartWidth            float32
+	ChartHeight           float32
+	PointRadius           float32
+	PaddingX              float32
+	PaddingY              float32
+	QuadrantLabelFontSize float32
+	AxisLabelFontSize     float32
+}
+
 // DefaultLayout returns a Layout with default values for diagram rendering.
 func DefaultLayout() *Layout {
 	return &Layout{
@@ -135,6 +157,22 @@ func DefaultLayout() *Layout {
 			ShowBits:   true,
 			PaddingX:   5,
 			PaddingY:   5,
+		},
+		Pie: PieConfig{
+			Radius:       150,
+			InnerRadius:  0,
+			TextPosition: 0.75,
+			PaddingX:     20,
+			PaddingY:     20,
+		},
+		Quadrant: QuadrantConfig{
+			ChartWidth:            400,
+			ChartHeight:           400,
+			PointRadius:           5,
+			PaddingX:              40,
+			PaddingY:              40,
+			QuadrantLabelFontSize: 14,
+			AxisLabelFontSize:     12,
 		},
 	}
 }

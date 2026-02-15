@@ -43,3 +43,29 @@ func TestDefaultLayoutHasSequenceConfig(t *testing.T) {
 		t.Error("Sequence.HeaderHeight should be > 0")
 	}
 }
+
+func TestDefaultLayoutPieConfig(t *testing.T) {
+	cfg := DefaultLayout()
+	if cfg.Pie.Radius != 150 {
+		t.Errorf("Pie.Radius = %f, want 150", cfg.Pie.Radius)
+	}
+	if cfg.Pie.TextPosition != 0.75 {
+		t.Errorf("Pie.TextPosition = %f, want 0.75", cfg.Pie.TextPosition)
+	}
+	if cfg.Pie.PaddingX != 20 {
+		t.Errorf("Pie.PaddingX = %f, want 20", cfg.Pie.PaddingX)
+	}
+}
+
+func TestDefaultLayoutQuadrantConfig(t *testing.T) {
+	cfg := DefaultLayout()
+	if cfg.Quadrant.ChartWidth != 400 {
+		t.Errorf("Quadrant.ChartWidth = %f, want 400", cfg.Quadrant.ChartWidth)
+	}
+	if cfg.Quadrant.ChartHeight != 400 {
+		t.Errorf("Quadrant.ChartHeight = %f, want 400", cfg.Quadrant.ChartHeight)
+	}
+	if cfg.Quadrant.PointRadius != 5 {
+		t.Errorf("Quadrant.PointRadius = %f, want 5", cfg.Quadrant.PointRadius)
+	}
+}
