@@ -490,3 +490,69 @@ type RadarCurveLayout struct {
 	Points     [][2]float32
 	ColorIndex int
 }
+
+// MindmapData holds mindmap layout data.
+type MindmapData struct {
+	Root *MindmapNodeLayout
+}
+
+func (MindmapData) diagramData() {}
+
+// MindmapNodeLayout holds the positioned data for one mindmap node.
+type MindmapNodeLayout struct {
+	Label      string
+	Shape      ir.MindmapShape
+	Icon       string
+	X, Y       float32
+	Width      float32
+	Height     float32
+	ColorIndex int
+	Children   []*MindmapNodeLayout
+}
+
+// SankeyData holds Sankey diagram layout data.
+type SankeyData struct {
+	Nodes []SankeyNodeLayout
+	Links []SankeyLinkLayout
+}
+
+func (SankeyData) diagramData() {}
+
+// SankeyNodeLayout holds a positioned Sankey node.
+type SankeyNodeLayout struct {
+	Label      string
+	X, Y       float32
+	Width      float32
+	Height     float32
+	ColorIndex int
+}
+
+// SankeyLinkLayout holds a positioned Sankey flow link.
+type SankeyLinkLayout struct {
+	SourceIdx int
+	TargetIdx int
+	Value     float64
+	SourceY   float32 // start Y position on source node
+	TargetY   float32 // start Y position on target node
+	Width     float32 // link thickness
+}
+
+// TreemapData holds treemap layout data.
+type TreemapData struct {
+	Rects []TreemapRectLayout
+	Title string
+}
+
+func (TreemapData) diagramData() {}
+
+// TreemapRectLayout holds a positioned treemap rectangle.
+type TreemapRectLayout struct {
+	Label      string
+	Value      float64
+	X, Y       float32
+	Width      float32
+	Height     float32
+	Depth      int
+	IsSection  bool
+	ColorIndex int
+}

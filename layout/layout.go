@@ -39,6 +39,12 @@ func ComputeLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 		return computeXYChartLayout(g, th, cfg)
 	case ir.Radar:
 		return computeRadarLayout(g, th, cfg)
+	case ir.Mindmap:
+		return computeMindmapLayout(g, th, cfg)
+	case ir.Sankey:
+		return computeSankeyLayout(g, th, cfg)
+	case ir.Treemap:
+		return computeTreemapLayout(g, th, cfg)
 	default:
 		// For unsupported diagram kinds, return a minimal layout.
 		return computeGraphLayout(g, th, cfg)
