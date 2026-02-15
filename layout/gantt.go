@@ -29,7 +29,7 @@ func parseMermaidDuration(s string) time.Duration {
 	if m == nil {
 		return 0
 	}
-	n, _ := strconv.Atoi(m[1])
+	n, _ := strconv.Atoi(m[1]) // regex guarantees digits
 	switch strings.ToLower(m[2]) {
 	case "d":
 		return time.Duration(n) * 24 * time.Hour

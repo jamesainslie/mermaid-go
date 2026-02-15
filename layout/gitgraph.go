@@ -42,7 +42,12 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 
 	var commits []commitInfo
 	commitMap := make(map[string]int) // commit ID -> index in commits
-	var connections []GitGraphConnection
+	type pendingConnection struct {
+		fromIdx      int
+		toIdx        int
+		isCherryPick bool
+	}
+	var connections []pendingConnection
 	autoID := 0
 
 	for _, action := range g.GitActions {
@@ -98,11 +103,9 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 			// Connection from merged branch head to this merge commit.
 			if srcBranch, ok := branches[a.Branch]; ok && srcBranch.head != "" {
 				if srcIdx, ok2 := commitMap[srcBranch.head]; ok2 {
-					connections = append(connections, GitGraphConnection{
-						FromX: float32(srcIdx), // placeholder, resolved below
-						FromY: 0,
-						ToX:   float32(len(commits) - 1),
-						ToY:   0,
+					connections = append(connections, pendingConnection{
+						fromIdx: srcIdx,
+						toIdx:   len(commits) - 1,
 					})
 				}
 			}
@@ -122,10 +125,10 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 			commits = append(commits, ci)
 
 			if srcIdx, ok := commitMap[a.ID]; ok {
-				connections = append(connections, GitGraphConnection{
-					FromX:        float32(srcIdx),
-					ToX:          float32(len(commits) - 1),
-					IsCherryPick: true,
+				connections = append(connections, pendingConnection{
+					fromIdx:      srcIdx,
+					toIdx:        len(commits) - 1,
+					isCherryPick: true,
 				})
 			}
 			branches[currentBranch].head = id
@@ -168,15 +171,13 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 	// Resolve connection pixel positions.
 	var connLayouts []GitGraphConnection
 	for _, conn := range connections {
-		fromIdx := int(conn.FromX)
-		toIdx := int(conn.ToX)
-		if fromIdx < len(commitLayouts) && toIdx < len(commitLayouts) {
+		if conn.fromIdx < len(commitLayouts) && conn.toIdx < len(commitLayouts) {
 			connLayouts = append(connLayouts, GitGraphConnection{
-				FromX:        commitLayouts[fromIdx].X,
-				FromY:        commitLayouts[fromIdx].Y,
-				ToX:          commitLayouts[toIdx].X,
-				ToY:          commitLayouts[toIdx].Y,
-				IsCherryPick: conn.IsCherryPick,
+				FromX:        commitLayouts[conn.fromIdx].X,
+				FromY:        commitLayouts[conn.fromIdx].Y,
+				ToX:          commitLayouts[conn.toIdx].X,
+				ToY:          commitLayouts[conn.toIdx].Y,
+				IsCherryPick: conn.isCherryPick,
 			})
 		}
 	}
