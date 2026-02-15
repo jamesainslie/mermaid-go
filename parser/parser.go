@@ -28,6 +28,8 @@ func Parse(input string) (*ParseOutput, error) {
 		return parseSequence(input)
 	case ir.Kanban:
 		return parseKanban(input)
+	case ir.Packet:
+		return parsePacket(input)
 	default:
 		return parseFlowchart(input)
 	}
