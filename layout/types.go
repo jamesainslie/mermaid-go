@@ -300,3 +300,115 @@ type QuadrantPointLayout struct {
 	X     float32
 	Y     float32
 }
+
+// TimelineData holds timeline-diagram-specific layout data.
+type TimelineData struct {
+	Sections []TimelineSectionLayout
+	Title    string
+}
+
+func (TimelineData) diagramData() {}
+
+// TimelineSectionLayout holds positioned section data.
+type TimelineSectionLayout struct {
+	Title   string
+	X, Y    float32
+	Width   float32
+	Height  float32
+	Color   string
+	Periods []TimelinePeriodLayout
+}
+
+// TimelinePeriodLayout holds positioned period data.
+type TimelinePeriodLayout struct {
+	Title  string
+	X, Y   float32
+	Width  float32
+	Height float32
+	Events []TimelineEventLayout
+}
+
+// TimelineEventLayout holds positioned event data.
+type TimelineEventLayout struct {
+	Text   string
+	X, Y   float32
+	Width  float32
+	Height float32
+}
+
+// GanttData holds Gantt-diagram-specific layout data.
+type GanttData struct {
+	Sections        []GanttSectionLayout
+	Title           string
+	AxisTicks       []GanttAxisTick
+	TodayMarkerX    float32
+	ShowTodayMarker bool
+	ChartX          float32
+	ChartY          float32
+	ChartWidth      float32
+	ChartHeight     float32
+}
+
+func (GanttData) diagramData() {}
+
+// GanttSectionLayout holds positioned section data.
+type GanttSectionLayout struct {
+	Title  string
+	Y      float32
+	Height float32
+	Color  string
+	Tasks  []GanttTaskLayout
+}
+
+// GanttTaskLayout holds positioned task bar data.
+type GanttTaskLayout struct {
+	ID          string
+	Label       string
+	X, Y        float32
+	Width       float32
+	Height      float32
+	IsCrit      bool
+	IsDone      bool
+	IsActive    bool
+	IsMilestone bool
+}
+
+// GanttAxisTick holds a tick mark on the date axis.
+type GanttAxisTick struct {
+	Label string
+	X     float32
+}
+
+// GitGraphData holds GitGraph-diagram-specific layout data.
+type GitGraphData struct {
+	Commits     []GitGraphCommitLayout
+	Branches    []GitGraphBranchLayout
+	Connections []GitGraphConnection
+}
+
+func (GitGraphData) diagramData() {}
+
+// GitGraphCommitLayout holds positioned commit data.
+type GitGraphCommitLayout struct {
+	ID     string
+	Tag    string
+	Type   ir.GitCommitType
+	Branch string
+	X, Y   float32
+}
+
+// GitGraphBranchLayout holds branch lane data.
+type GitGraphBranchLayout struct {
+	Name   string
+	Y      float32
+	Color  string
+	StartX float32
+	EndX   float32
+}
+
+// GitGraphConnection holds a line connecting two commits (merge/cherry-pick).
+type GitGraphConnection struct {
+	FromX, FromY float32
+	ToX, ToY     float32
+	IsCherryPick bool
+}

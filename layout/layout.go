@@ -29,6 +29,12 @@ func ComputeLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 		return computePieLayout(g, th, cfg)
 	case ir.Quadrant:
 		return computeQuadrantLayout(g, th, cfg)
+	case ir.Timeline:
+		return computeTimelineLayout(g, th, cfg)
+	case ir.Gantt:
+		return computeGanttLayout(g, th, cfg)
+	case ir.GitGraph:
+		return computeGitGraphLayout(g, th, cfg)
 	default:
 		// For unsupported diagram kinds, return a minimal layout.
 		return computeGraphLayout(g, th, cfg)
