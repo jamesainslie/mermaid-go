@@ -639,6 +639,12 @@ type JourneyActorLayout struct {
 type ArchitectureData struct {
 	Groups    []ArchGroupLayout
 	Junctions []ArchJunctionLayout
+	Services  map[string]ArchServiceInfo // keyed by node ID
+}
+
+// ArchServiceInfo carries per-service rendering metadata.
+type ArchServiceInfo struct {
+	Icon string
 }
 
 func (ArchitectureData) diagramData() {}

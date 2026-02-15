@@ -156,6 +156,12 @@ func computeArchitectureLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout)
 	totalW := acfg.PaddingX*2 + float32(maxCol+1)*acfg.ServiceWidth + float32(maxCol)*acfg.ColumnGap
 	totalH := acfg.PaddingY*2 + float32(maxRow+1)*acfg.ServiceHeight + float32(maxRow)*acfg.RowGap
 
+	// Build service info map for rendering (icon data).
+	svcInfo := make(map[string]ArchServiceInfo, len(g.ArchServices))
+	for _, svc := range g.ArchServices {
+		svcInfo[svc.ID] = ArchServiceInfo{Icon: svc.Icon}
+	}
+
 	return &Layout{
 		Kind:   g.Kind,
 		Nodes:  nodes,
@@ -165,6 +171,7 @@ func computeArchitectureLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout)
 		Diagram: ArchitectureData{
 			Groups:    groups,
 			Junctions: junctions,
+			Services:  svcInfo,
 		},
 	}
 }
