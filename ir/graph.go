@@ -88,6 +88,24 @@ type Graph struct {
 	XAxisRight     string
 	YAxisBottom    string
 	YAxisTop       string
+
+	// Timeline diagram fields
+	TimelineSections []*TimelineSection
+	TimelineTitle    string
+
+	// Gantt diagram fields
+	GanttSections     []*GanttSection
+	GanttTitle        string
+	GanttDateFormat   string
+	GanttAxisFormat   string
+	GanttExcludes     []string
+	GanttTickInterval string
+	GanttTodayMarker  string
+	GanttWeekday      string
+
+	// GitGraph diagram fields
+	GitActions    []GitAction
+	GitMainBranch string
 }
 
 func NewGraph() *Graph {
