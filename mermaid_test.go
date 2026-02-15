@@ -598,3 +598,102 @@ func TestRenderRadarPolygonFixture(t *testing.T) {
 		t.Error("missing polygon graticule/curves")
 	}
 }
+
+func TestRenderMindmapBasicFixture(t *testing.T) {
+	input := readFixture(t, "mindmap-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Project") {
+		t.Error("missing root label")
+	}
+	if !strings.Contains(svg, "Goals") {
+		t.Error("missing branch label")
+	}
+}
+
+func TestRenderMindmapShapesFixture(t *testing.T) {
+	input := readFixture(t, "mindmap-shapes.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Center") {
+		t.Error("missing root label")
+	}
+	if !strings.Contains(svg, "<circle") {
+		t.Error("missing circle shape")
+	}
+}
+
+func TestRenderSankeyBasicFixture(t *testing.T) {
+	input := readFixture(t, "sankey-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Solar") {
+		t.Error("missing node label")
+	}
+	if !strings.Contains(svg, "<rect") {
+		t.Error("missing node rects")
+	}
+	if !strings.Contains(svg, "<path") {
+		t.Error("missing link paths")
+	}
+}
+
+func TestRenderSankeyEnergyFixture(t *testing.T) {
+	input := readFixture(t, "sankey-energy.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Electricity") {
+		t.Error("missing node label")
+	}
+}
+
+func TestRenderTreemapBasicFixture(t *testing.T) {
+	input := readFixture(t, "treemap-basic.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Engineering") {
+		t.Error("missing leaf label")
+	}
+	if !strings.Contains(svg, "<rect") {
+		t.Error("missing rectangles")
+	}
+}
+
+func TestRenderTreemapNestedFixture(t *testing.T) {
+	input := readFixture(t, "treemap-nested.mmd")
+	svg, err := Render(input)
+	if err != nil {
+		t.Fatalf("Render: %v", err)
+	}
+	if !strings.Contains(svg, "<svg") {
+		t.Error("expected SVG output")
+	}
+	if !strings.Contains(svg, "Backend") {
+		t.Error("missing nested leaf label")
+	}
+}
