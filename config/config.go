@@ -21,6 +21,9 @@ type Layout struct {
 	GitGraph             GitGraphConfig
 	XYChart              XYChartConfig
 	Radar                RadarConfig
+	Mindmap              MindmapConfig
+	Sankey               SankeyConfig
+	Treemap              TreemapConfig
 }
 
 // FlowchartConfig holds flowchart-specific layout options.
@@ -161,6 +164,38 @@ type RadarConfig struct {
 	CurveOpacity float32
 }
 
+// MindmapConfig holds mindmap diagram layout options.
+type MindmapConfig struct {
+	BranchSpacing float32
+	LevelSpacing  float32
+	PaddingX      float32
+	PaddingY      float32
+	NodePadding   float32
+}
+
+// SankeyConfig holds Sankey diagram layout options.
+type SankeyConfig struct {
+	ChartWidth  float32
+	ChartHeight float32
+	NodeWidth   float32
+	NodePadding float32
+	PaddingX    float32
+	PaddingY    float32
+	Iterations  int // link relaxation iterations
+}
+
+// TreemapConfig holds Treemap diagram layout options.
+type TreemapConfig struct {
+	ChartWidth    float32
+	ChartHeight   float32
+	Padding       float32 // inner padding between rects
+	HeaderHeight  float32
+	PaddingX      float32
+	PaddingY      float32
+	LabelFontSize float32
+	ValueFontSize float32
+}
+
 // DefaultLayout returns a Layout with default values for diagram rendering.
 func DefaultLayout() *Layout {
 	return &Layout{
@@ -274,6 +309,32 @@ func DefaultLayout() *Layout {
 			DefaultTicks: 5,
 			LabelOffset:  20,
 			CurveOpacity: 0.3,
+		},
+		Mindmap: MindmapConfig{
+			BranchSpacing: 80,
+			LevelSpacing:  60,
+			PaddingX:      40,
+			PaddingY:      40,
+			NodePadding:   12,
+		},
+		Sankey: SankeyConfig{
+			ChartWidth:  800,
+			ChartHeight: 400,
+			NodeWidth:   20,
+			NodePadding: 10,
+			PaddingX:    40,
+			PaddingY:    20,
+			Iterations:  32,
+		},
+		Treemap: TreemapConfig{
+			ChartWidth:    600,
+			ChartHeight:   400,
+			Padding:       4,
+			HeaderHeight:  24,
+			PaddingX:      10,
+			PaddingY:      10,
+			LabelFontSize: 12,
+			ValueFontSize: 10,
 		},
 	}
 }

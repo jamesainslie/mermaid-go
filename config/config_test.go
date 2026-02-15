@@ -116,6 +116,36 @@ func TestXYChartConfigDefaults(t *testing.T) {
 	}
 }
 
+func TestDefaultLayoutMindmapConfig(t *testing.T) {
+	cfg := DefaultLayout()
+	if cfg.Mindmap.BranchSpacing != 80 {
+		t.Errorf("Mindmap.BranchSpacing = %v, want 80", cfg.Mindmap.BranchSpacing)
+	}
+	if cfg.Mindmap.LevelSpacing != 60 {
+		t.Errorf("Mindmap.LevelSpacing = %v, want 60", cfg.Mindmap.LevelSpacing)
+	}
+}
+
+func TestDefaultLayoutSankeyConfig(t *testing.T) {
+	cfg := DefaultLayout()
+	if cfg.Sankey.ChartWidth != 800 {
+		t.Errorf("Sankey.ChartWidth = %v, want 800", cfg.Sankey.ChartWidth)
+	}
+	if cfg.Sankey.NodeWidth != 20 {
+		t.Errorf("Sankey.NodeWidth = %v, want 20", cfg.Sankey.NodeWidth)
+	}
+}
+
+func TestDefaultLayoutTreemapConfig(t *testing.T) {
+	cfg := DefaultLayout()
+	if cfg.Treemap.ChartWidth != 600 {
+		t.Errorf("Treemap.ChartWidth = %v, want 600", cfg.Treemap.ChartWidth)
+	}
+	if cfg.Treemap.Padding != 4 {
+		t.Errorf("Treemap.Padding = %v, want 4", cfg.Treemap.Padding)
+	}
+}
+
 func TestRadarConfigDefaults(t *testing.T) {
 	cfg := DefaultLayout()
 	if cfg.Radar.Radius != 200 {

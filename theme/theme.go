@@ -110,6 +110,21 @@ type Theme struct {
 	RadarAxisColor      string
 	RadarGraticuleColor string
 	RadarCurveOpacity   float32
+
+	// Mindmap colors
+	MindmapBranchColors []string
+	MindmapNodeFill     string
+	MindmapNodeBorder   string
+
+	// Sankey colors
+	SankeyNodeColors  []string
+	SankeyLinkColor   string
+	SankeyLinkOpacity float32
+
+	// Treemap colors
+	TreemapColors    []string
+	TreemapBorder    string
+	TreemapTextColor string
 }
 
 // Modern returns a theme with a clean, modern color palette using the Inter font.
@@ -229,6 +244,27 @@ func Modern() *Theme {
 		RadarAxisColor:      "#6E7B8B",
 		RadarGraticuleColor: "#E0E0E0",
 		RadarCurveOpacity:   0.3,
+
+		MindmapBranchColors: []string{
+			"#4C78A8", "#72B7B2", "#EECA3B", "#F58518",
+			"#E45756", "#54A24B", "#B279A2", "#FF9DA6",
+		},
+		MindmapNodeFill:   "#F0F4F8",
+		MindmapNodeBorder: "#3B6492",
+
+		SankeyNodeColors: []string{
+			"#4C78A8", "#72B7B2", "#EECA3B", "#F58518",
+			"#E45756", "#54A24B", "#B279A2", "#FF9DA6",
+		},
+		SankeyLinkColor:   "#6E7B8B",
+		SankeyLinkOpacity: 0.4,
+
+		TreemapColors: []string{
+			"#4C78A8", "#72B7B2", "#EECA3B", "#F58518",
+			"#E45756", "#54A24B", "#B279A2", "#FF9DA6",
+		},
+		TreemapBorder:    "#3B6492",
+		TreemapTextColor: "#FFFFFF",
 	}
 }
 
@@ -349,5 +385,26 @@ func MermaidDefault() *Theme {
 		RadarAxisColor:      "#888",
 		RadarGraticuleColor: "#ddd",
 		RadarCurveOpacity:   0.3,
+
+		MindmapBranchColors: []string{
+			"#9370DB", "#E76F51", "#7FB069", "#F4A261",
+			"#48A9A6", "#D08AC0", "#E4E36A", "#F7B7A3",
+		},
+		MindmapNodeFill:   "#ECECFF",
+		MindmapNodeBorder: "#9370DB",
+
+		SankeyNodeColors: []string{
+			"#4C78A8", "#48A9A6", "#E4E36A", "#F4A261",
+			"#E76F51", "#7FB069", "#D08AC0", "#F7B7A3",
+		},
+		SankeyLinkColor:   "#888",
+		SankeyLinkOpacity: 0.4,
+
+		TreemapColors: []string{
+			"#4C78A8", "#48A9A6", "#E4E36A", "#F4A261",
+			"#E76F51", "#7FB069", "#D08AC0", "#F7B7A3",
+		},
+		TreemapBorder:    "#9370DB",
+		TreemapTextColor: "#333",
 	}
 }

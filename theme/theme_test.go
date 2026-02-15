@@ -110,6 +110,36 @@ func TestModernXYChartColors(t *testing.T) {
 	}
 }
 
+func TestModernMindmapColors(t *testing.T) {
+	th := Modern()
+	if len(th.MindmapBranchColors) == 0 {
+		t.Error("MindmapBranchColors is empty")
+	}
+	if th.MindmapNodeBorder == "" {
+		t.Error("MindmapNodeBorder is empty")
+	}
+}
+
+func TestModernSankeyColors(t *testing.T) {
+	th := Modern()
+	if len(th.SankeyNodeColors) == 0 {
+		t.Error("SankeyNodeColors is empty")
+	}
+	if th.SankeyLinkColor == "" {
+		t.Error("SankeyLinkColor is empty")
+	}
+}
+
+func TestModernTreemapColors(t *testing.T) {
+	th := Modern()
+	if len(th.TreemapColors) == 0 {
+		t.Error("TreemapColors is empty")
+	}
+	if th.TreemapBorder == "" {
+		t.Error("TreemapBorder is empty")
+	}
+}
+
 func TestModernRadarColors(t *testing.T) {
 	th := Modern()
 	if len(th.RadarCurveColors) == 0 {
