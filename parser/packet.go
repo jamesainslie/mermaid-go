@@ -28,8 +28,8 @@ func parsePacket(input string) (*ParseOutput, error) {
 
 		// Try range notation: 0-15: "Source Port"
 		if m := packetRangeRe.FindStringSubmatch(line); m != nil {
-			start, _ := strconv.Atoi(m[1])
-			end, _ := strconv.Atoi(m[2])
+			start, _ := strconv.Atoi(m[1]) // regex guarantees digits
+			end, _ := strconv.Atoi(m[2])   // regex guarantees digits
 			desc := m[3]
 			g.Fields = append(g.Fields, &ir.PacketField{
 				Start: start, End: end, Description: desc,
@@ -40,7 +40,7 @@ func parsePacket(input string) (*ParseOutput, error) {
 
 		// Try bit count notation: +16: "Source Port"
 		if m := packetBitCountRe.FindStringSubmatch(line); m != nil {
-			count, _ := strconv.Atoi(m[1])
+			count, _ := strconv.Atoi(m[1]) // regex guarantees digits
 			desc := m[2]
 			start := nextBit
 			end := start + count - 1

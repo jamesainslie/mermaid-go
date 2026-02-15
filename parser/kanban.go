@@ -74,14 +74,16 @@ func preprocessKanbanInput(input string) []kanbanLine {
 		// spaces count as 1 each — consistent with mermaid.js behavior).
 		indent := 0
 		for _, ch := range rawLine {
-			if ch == ' ' {
+			switch ch {
+			case ' ':
 				indent++
-			} else if ch == '\t' {
+			case '\t':
 				indent += 2 // treat tab as 2 spaces
-			} else {
-				break
+			default:
+				goto done
 			}
 		}
+	done:
 
 		trimmed := strings.TrimSpace(rawLine)
 		if trimmed == "" {
