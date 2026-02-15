@@ -30,6 +30,10 @@ func Parse(input string) (*ParseOutput, error) {
 		return parseKanban(input)
 	case ir.Packet:
 		return parsePacket(input)
+	case ir.Pie:
+		return parsePie(input)
+	case ir.Quadrant:
+		return parseQuadrant(input)
 	default:
 		return parseFlowchart(input)
 	}
