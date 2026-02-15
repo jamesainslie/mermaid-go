@@ -1,0 +1,55 @@
+package render
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/ir"
+	"github.com/jamesainslie/mermaid-go/layout"
+	"github.com/jamesainslie/mermaid-go/theme"
+)
+
+func TestRenderMindmap(t *testing.T) {
+	g := ir.NewGraph()
+	g.Kind = ir.Mindmap
+	g.MindmapRoot = &ir.MindmapNode{
+		ID: "root", Label: "Central", Shape: ir.MindmapCircle,
+		Children: []*ir.MindmapNode{
+			{ID: "a", Label: "Square", Shape: ir.MindmapSquare},
+			{ID: "b", Label: "Rounded", Shape: ir.MindmapRounded},
+		},
+	}
+
+	th := theme.Modern()
+	cfg := config.DefaultLayout()
+	l := layout.ComputeLayout(g, th, cfg)
+	svg := RenderSVG(l, th, cfg)
+
+	if !strings.Contains(svg, "<svg") {
+		t.Error("missing <svg tag")
+	}
+	if !strings.Contains(svg, "Central") {
+		t.Error("missing root label")
+	}
+	if !strings.Contains(svg, "Square") {
+		t.Error("missing child label")
+	}
+	if !strings.Contains(svg, "<circle") {
+		t.Error("missing circle for root node")
+	}
+}
+
+func TestRenderMindmapEmpty(t *testing.T) {
+	g := ir.NewGraph()
+	g.Kind = ir.Mindmap
+
+	th := theme.Modern()
+	cfg := config.DefaultLayout()
+	l := layout.ComputeLayout(g, th, cfg)
+	svg := RenderSVG(l, th, cfg)
+
+	if !strings.Contains(svg, "<svg") {
+		t.Error("missing <svg tag")
+	}
+}

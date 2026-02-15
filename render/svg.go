@@ -66,6 +66,12 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 		renderXYChart(&b, l, th, cfg)
 	case layout.RadarData:
 		renderRadar(&b, l, th, cfg)
+	case layout.MindmapData:
+		renderMindmap(&b, l, th, cfg)
+	case layout.SankeyData:
+		renderSankey(&b, l, th, cfg)
+	case layout.TreemapData:
+		renderTreemap(&b, l, th, cfg)
 	default:
 		// For other diagram types, still render graph as a fallback.
 		renderGraph(&b, l, th, cfg)
