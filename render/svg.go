@@ -56,6 +56,12 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 		renderPie(&b, l, th, cfg)
 	case layout.QuadrantData:
 		renderQuadrant(&b, l, th, cfg)
+	case layout.TimelineData:
+		renderTimeline(&b, l, th, cfg)
+	case layout.GanttData:
+		renderGantt(&b, l, th, cfg)
+	case layout.GitGraphData:
+		renderGitGraph(&b, l, th, cfg)
 	default:
 		// For other diagram types, still render graph as a fallback.
 		renderGraph(&b, l, th, cfg)
