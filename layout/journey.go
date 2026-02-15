@@ -1,6 +1,8 @@
 package layout
 
 import (
+	"sort"
+
 	"github.com/jamesainslie/mermaid-go/config"
 	"github.com/jamesainslie/mermaid-go/ir"
 	"github.com/jamesainslie/mermaid-go/textmetrics"
@@ -18,11 +20,14 @@ func computeJourneyLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Lay
 			actorSet[a] = true
 		}
 	}
-	var actors []JourneyActorLayout
-	idx := 0
+	var actorNames []string
 	for a := range actorSet {
+		actorNames = append(actorNames, a)
+	}
+	sort.Strings(actorNames)
+	var actors []JourneyActorLayout
+	for idx, a := range actorNames {
 		actors = append(actors, JourneyActorLayout{Name: a, ColorIndex: idx})
-		idx++
 	}
 
 	// Title height

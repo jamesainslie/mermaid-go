@@ -42,7 +42,13 @@ func parseJourney(input string) (*ParseOutput, error) {
 
 		if m := journeyTaskRe.FindStringSubmatch(line); m != nil {
 			name := strings.TrimSpace(m[1])
-			score, _ := strconv.Atoi(m[2])
+			score, _ := strconv.Atoi(m[2]) // regex guarantees \d+
+			if score < 1 {
+				score = 1
+			}
+			if score > 5 {
+				score = 5
+			}
 			var actors []string
 			if m[3] != "" {
 				for _, a := range strings.Split(m[3], ",") {
