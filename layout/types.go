@@ -252,3 +252,51 @@ type PacketFieldLayout struct {
 	StartBit int
 	EndBit   int
 }
+
+// PieData holds pie-chart-specific layout data.
+type PieData struct {
+	Slices   []PieSliceLayout
+	CenterX  float32
+	CenterY  float32
+	Radius   float32
+	Title    string
+	ShowData bool
+}
+
+func (PieData) diagramData() {}
+
+// PieSliceLayout holds computed angles and label position for one slice.
+type PieSliceLayout struct {
+	Label      string
+	Value      float64
+	Percentage float32
+	StartAngle float32
+	EndAngle   float32
+	LabelX     float32
+	LabelY     float32
+	ColorIndex int
+}
+
+// QuadrantData holds quadrant-chart-specific layout data.
+type QuadrantData struct {
+	Points      []QuadrantPointLayout
+	ChartX      float32
+	ChartY      float32
+	ChartWidth  float32
+	ChartHeight float32
+	Title       string
+	Labels      [4]string
+	XAxisLeft   string
+	XAxisRight  string
+	YAxisBottom string
+	YAxisTop    string
+}
+
+func (QuadrantData) diagramData() {}
+
+// QuadrantPointLayout holds the pixel position of a data point.
+type QuadrantPointLayout struct {
+	Label string
+	X     float32
+	Y     float32
+}
