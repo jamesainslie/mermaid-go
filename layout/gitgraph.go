@@ -184,7 +184,10 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 	// Build branch layouts.
 	var branchLayouts []GitGraphBranchLayout
 	for i, bl := range sortedBranches {
-		colorIdx := i % len(th.GitBranchColors)
+		color := "#4A90D9" // fallback
+		if len(th.GitBranchColors) > 0 {
+			color = th.GitBranchColors[i%len(th.GitBranchColors)]
+		}
 		// Find start and end X for this branch.
 		var startX, endX float32
 		first := true
@@ -202,7 +205,7 @@ func computeGitGraphLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 		branchLayouts = append(branchLayouts, GitGraphBranchLayout{
 			Name:   bl.name,
 			Y:      branchY[bl.name],
-			Color:  th.GitBranchColors[colorIdx],
+			Color:  color,
 			StartX: startX,
 			EndX:   endX,
 		})

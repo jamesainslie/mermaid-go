@@ -14,13 +14,13 @@ import (
 var ganttDurationRe = regexp.MustCompile(`^(\d+)([dwmhDWMH])$`)
 
 // mermaidDateToGoLayout converts mermaid dateFormat tokens to Go time layout.
-func mermaidDateToGoLayout(fmt string) string {
+func mermaidDateToGoLayout(format string) string {
 	r := strings.NewReplacer(
 		"YYYY", "2006", "YY", "06",
 		"MM", "01", "DD", "02",
 		"HH", "15", "mm", "04", "ss", "05",
 	)
-	return r.Replace(fmt)
+	return r.Replace(format)
 }
 
 // parseMermaidDuration converts a mermaid duration string to time.Duration.
@@ -178,12 +178,15 @@ func computeGanttLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layou
 		}
 
 		secH := curY - secStartY
-		colorIdx := i % len(th.GanttSectionColors)
+		color := "#F0F4F8" // fallback
+		if len(th.GanttSectionColors) > 0 {
+			color = th.GanttSectionColors[i%len(th.GanttSectionColors)]
+		}
 		sections = append(sections, GanttSectionLayout{
 			Title:  sec.Title,
 			Y:      secStartY,
 			Height: secH,
-			Color:  th.GanttSectionColors[colorIdx],
+			Color:  color,
 			Tasks:  tasks,
 		})
 	}

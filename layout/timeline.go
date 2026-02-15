@@ -55,8 +55,10 @@ func computeTimelineLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *La
 		sectionH := float32(maxEvents)*eventH + secPad*2
 
 		// Color cycling.
-		colorIdx := i % len(th.TimelineSectionColors)
-		color := th.TimelineSectionColors[colorIdx]
+		color := "#F0F4F8" // fallback
+		if len(th.TimelineSectionColors) > 0 {
+			color = th.TimelineSectionColors[i%len(th.TimelineSectionColors)]
+		}
 
 		var periods []TimelinePeriodLayout
 		for j, p := range sec.Periods {
