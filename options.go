@@ -2,6 +2,7 @@ package mermaid
 
 import (
 	"github.com/jamesainslie/mermaid-go/config"
+	"github.com/jamesainslie/mermaid-go/parser"
 	"github.com/jamesainslie/mermaid-go/theme"
 )
 
@@ -15,9 +16,41 @@ type Options struct {
 	Layout *config.Layout
 }
 
-func (o Options) themeOrDefault() *theme.Theme {
+func (o Options) resolveTheme(dir parser.Directive) *theme.Theme {
+	// CLI ThemeName takes highest precedence.
 	if o.ThemeName != "" {
 		return theme.ByName(o.ThemeName)
+	}
+	// Directive theme is second.
+	if dir.Theme != "" || dir.ThemeVariables != (parser.ThemeVariables{}) {
+		var th *theme.Theme
+		if dir.Theme != "" {
+			th = theme.ByName(dir.Theme)
+		} else if o.Theme != nil {
+			th = o.Theme
+		} else {
+			th = theme.Modern()
+		}
+		if dir.ThemeVariables != (parser.ThemeVariables{}) {
+			ov := theme.Overrides{}
+			if dir.ThemeVariables.FontFamily != "" {
+				ov.FontFamily = &dir.ThemeVariables.FontFamily
+			}
+			if dir.ThemeVariables.Background != "" {
+				ov.Background = &dir.ThemeVariables.Background
+			}
+			if dir.ThemeVariables.PrimaryColor != "" {
+				ov.PrimaryColor = &dir.ThemeVariables.PrimaryColor
+			}
+			if dir.ThemeVariables.LineColor != "" {
+				ov.LineColor = &dir.ThemeVariables.LineColor
+			}
+			if dir.ThemeVariables.TextColor != "" {
+				ov.TextColor = &dir.ThemeVariables.TextColor
+			}
+			th = theme.WithOverrides(th, ov)
+		}
+		return th
 	}
 	if o.Theme != nil {
 		return o.Theme

@@ -24,7 +24,6 @@ func RenderWithOptions(input string, opts Options) (string, error) {
 		return "", fmt.Errorf("mermaid: empty input")
 	}
 
-	th := opts.themeOrDefault()
 	cfg := opts.layoutOrDefault()
 
 	parsed, err := parser.Parse(input)
@@ -32,6 +31,7 @@ func RenderWithOptions(input string, opts Options) (string, error) {
 		return "", fmt.Errorf("parse: %w", err)
 	}
 
+	th := opts.resolveTheme(parsed.Directive)
 	l := layout.ComputeLayout(parsed.Graph, th, cfg)
 	svg := render.RenderSVG(l, th, cfg)
 	return svg, nil
@@ -43,7 +43,6 @@ func RenderWithTiming(input string, opts Options) (*Result, error) {
 		return nil, fmt.Errorf("mermaid: empty input")
 	}
 
-	th := opts.themeOrDefault()
 	cfg := opts.layoutOrDefault()
 
 	t0 := time.Now()
@@ -52,6 +51,8 @@ func RenderWithTiming(input string, opts Options) (*Result, error) {
 		return nil, fmt.Errorf("parse: %w", err)
 	}
 	parseUs := time.Since(t0).Microseconds()
+
+	th := opts.resolveTheme(parsed.Directive)
 
 	t1 := time.Now()
 	l := layout.ComputeLayout(parsed.Graph, th, cfg)
