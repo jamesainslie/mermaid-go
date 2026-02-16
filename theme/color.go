@@ -139,6 +139,58 @@ func rgbToHSL(r, g, b int) (h, s, l float32) {
 	return float32(hf), float32(sf * 100.0), float32(lf * 100.0)
 }
 
+// HSLToHex converts HSL values (h: 0-360, s: 0-100, l: 0-100) to a "#RRGGBB" hex string.
+func HSLToHex(h, s, l float32) string {
+	r, g, b := hslToRGB(h, s, l)
+	return fmt.Sprintf("#%02X%02X%02X", r, g, b)
+}
+
+// hslToRGB converts HSL (h: 0-360, s: 0-100, l: 0-100) to RGB (0-255).
+func hslToRGB(h, s, l float32) (r, g, b int) {
+	sf := float64(s) / 100.0
+	lf := float64(l) / 100.0
+	hf := float64(h)
+
+	if sf == 0 {
+		v := int(math.Round(lf * 255.0))
+		return v, v, v
+	}
+
+	var q float64
+	if lf < 0.5 {
+		q = lf * (1.0 + sf)
+	} else {
+		q = lf + sf - lf*sf
+	}
+	p := 2.0*lf - q
+
+	hNorm := hf / 360.0
+
+	r = int(math.Round(hueToRGB(p, q, hNorm+1.0/3.0) * 255.0))
+	g = int(math.Round(hueToRGB(p, q, hNorm) * 255.0))
+	b = int(math.Round(hueToRGB(p, q, hNorm-1.0/3.0) * 255.0))
+	return
+}
+
+func hueToRGB(p, q, t float64) float64 {
+	if t < 0 {
+		t += 1
+	}
+	if t > 1 {
+		t -= 1
+	}
+	switch {
+	case t < 1.0/6.0:
+		return p + (q-p)*6.0*t
+	case t < 1.0/2.0:
+		return q
+	case t < 2.0/3.0:
+		return p + (q-p)*(2.0/3.0-t)*6.0
+	default:
+		return p
+	}
+}
+
 // AdjustColor parses the given color, applies HSL adjustments, and returns
 // the result as an "hsl(h, s%, l%)" string. If the color cannot be parsed,
 // the original string is returned unchanged.

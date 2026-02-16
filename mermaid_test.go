@@ -914,3 +914,34 @@ func TestRenderZenUMLTryCatchFixture(t *testing.T) {
 		t.Error("missing divider dashed lines for catch/finally")
 	}
 }
+
+func TestRenderWithThemeName(t *testing.T) {
+	input := "flowchart LR; A-->B"
+	tests := []string{"modern", "default", "dark", "forest", "neutral"}
+	for _, name := range tests {
+		t.Run(name, func(t *testing.T) {
+			svg, err := RenderWithOptions(input, Options{ThemeName: name})
+			if err != nil {
+				t.Fatalf("ThemeName=%q: %v", name, err)
+			}
+			if !strings.Contains(svg, "<svg") {
+				t.Errorf("ThemeName=%q: missing <svg", name)
+			}
+		})
+	}
+}
+
+func TestThemeNameOverridesThemeField(t *testing.T) {
+	// When ThemeName is set, it takes precedence.
+	input := "flowchart LR; A-->B"
+	svg, err := RenderWithOptions(input, Options{
+		ThemeName: "dark",
+	})
+	if err != nil {
+		t.Fatalf("error: %v", err)
+	}
+	// Dark theme has dark background #1A1A2E.
+	if !strings.Contains(svg, "#1A1A2E") {
+		t.Error("expected dark background color in SVG")
+	}
+}
