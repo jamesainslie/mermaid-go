@@ -7,11 +7,18 @@ import (
 
 // Options configures Mermaid rendering. Zero value uses Modern theme and default layout.
 type Options struct {
+	// ThemeName selects a built-in theme by name ("modern", "default", "dark",
+	// "forest", "neutral"). Takes precedence over Theme if non-empty.
+	ThemeName string
+	// Theme provides a custom theme. Ignored if ThemeName is set.
 	Theme  *theme.Theme
 	Layout *config.Layout
 }
 
 func (o Options) themeOrDefault() *theme.Theme {
+	if o.ThemeName != "" {
+		return theme.ByName(o.ThemeName)
+	}
 	if o.Theme != nil {
 		return o.Theme
 	}
