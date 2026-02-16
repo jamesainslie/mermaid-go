@@ -126,14 +126,24 @@ func (b *svgBuilder) polygon(points [][2]float32, attrs ...string) {
 }
 
 // writeAttrs writes key="value" attribute pairs to a builder.
+// Values are XML-escaped to prevent injection via user-controlled content.
 func writeAttrs(buf *strings.Builder, attrs []string) {
 	for i := 0; i+1 < len(attrs); i += 2 {
 		buf.WriteByte(' ')
 		buf.WriteString(attrs[i])
 		buf.WriteString("=\"")
-		buf.WriteString(attrs[i+1])
+		buf.WriteString(escapeXMLAttr(attrs[i+1]))
 		buf.WriteByte('"')
 	}
+}
+
+// escapeXMLAttr escapes special characters in XML attribute values.
+func escapeXMLAttr(s string) string {
+	s = strings.ReplaceAll(s, "&", "&amp;")
+	s = strings.ReplaceAll(s, "<", "&lt;")
+	s = strings.ReplaceAll(s, ">", "&gt;")
+	s = strings.ReplaceAll(s, "\"", "&quot;")
+	return s
 }
 
 // formatPoints formats a slice of [2]float32 as an SVG points string.

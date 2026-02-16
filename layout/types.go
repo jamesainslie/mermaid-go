@@ -15,6 +15,7 @@ type Layout struct {
 	Subgraphs []*SubgraphLayout
 	Width     float32
 	Height    float32
+	Title     string
 	Diagram   DiagramData
 }
 
