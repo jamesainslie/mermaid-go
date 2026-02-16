@@ -44,10 +44,10 @@ var (
 	zenFinallyRe  = regexp.MustCompile(`(?i)^finally\s*(?:\(\))?\s*\{$`)
 	zenOptRe      = regexp.MustCompile(`(?i)^opt\s*\{$`)
 	zenParRe      = regexp.MustCompile(`(?i)^par\s*\{$`)
-	zenNewRe      = regexp.MustCompile(`^(?:(\w+)\s*=\s*)?new\s+(\w+)\s*\([^)]*\)\s*(\{)?$`)
+	zenNewRe      = regexp.MustCompile(`^(?:(\w+)\s*=\s*)?new\s+(\w+)\s*\(`)
 	zenAsyncRe    = regexp.MustCompile(`^(\w+)\s*->\s*(\w+)\s*:\s*(.+)$`)
-	zenSyncRe     = regexp.MustCompile(`^(?:(\w+)\s*=\s*)?(\w+)\.(\w+)\(([^)]*)\)\s*(\{)?$`)
-	zenSelfCallRe = regexp.MustCompile(`^(\w+)\(([^)]*)\)\s*(\{)?$`)
+	zenSyncRe     = regexp.MustCompile(`^(?:(\w+)\s*=\s*)?(\w+)\.(\w+)\(`)
+	zenSelfCallRe = regexp.MustCompile(`^(\w+)\(`)
 	zenAtReturnRe = regexp.MustCompile(`(?i)^@return\s+(\w+)\s*->\s*(\w+)\s*:\s*(.+)$`)
 	zenIdentRe    = regexp.MustCompile(`^\w+$`)
 )
@@ -100,13 +100,28 @@ func parseZenUML(input string) (*ParseOutput, error) {
 
 	// closeBlock pops the top block from the stack and emits appropriate
 	// close events. remainder is the text remaining after the '}' on the
-	// same line, used to detect continuations (else, catch, finally).
-	closeBlock := func(remainder string) {
+	// same line, and nextLine is the following line (for split-line
+	// continuations like "}\n else {"). Both are used to detect
+	// continuations (else, catch, finally).
+	closeBlock := func(remainder, nextLine string) {
 		if len(stack) == 0 {
 			return
 		}
 		top := stack[len(stack)-1]
 		stack = stack[:len(stack)-1]
+
+		// Check both same-line remainder and next-line for continuations.
+		isContinuation := func(keywords ...string) bool {
+			for _, source := range []string{remainder, nextLine} {
+				lower := strings.ToLower(strings.TrimSpace(source))
+				for _, kw := range keywords {
+					if strings.HasPrefix(lower, kw) {
+						return true
+					}
+				}
+			}
+			return false
+		}
 
 		switch top.kind {
 		case zenMsgBlock:
@@ -114,15 +129,13 @@ func parseZenUML(input string) (*ParseOutput, error) {
 			caller = top.caller
 
 		case zenIfBlock, zenElseIfBlock:
-			lower := strings.ToLower(strings.TrimSpace(remainder))
-			if strings.HasPrefix(lower, "else") {
+			if isContinuation("else") {
 				return // continuation follows, don't close frame
 			}
 			emit(&ir.SeqEvent{Kind: ir.EvFrameEnd})
 
 		case zenTryBlock, zenCatchBlock:
-			lower := strings.ToLower(strings.TrimSpace(remainder))
-			if strings.HasPrefix(lower, "catch") || strings.HasPrefix(lower, "finally") {
+			if isContinuation("catch", "finally") {
 				return // continuation follows
 			}
 			emit(&ir.SeqEvent{Kind: ir.EvFrameEnd})
@@ -145,7 +158,11 @@ func parseZenUML(input string) (*ParseOutput, error) {
 		// Process leading close braces. Each '}' closes the top block.
 		for strings.HasPrefix(line, "}") {
 			line = strings.TrimSpace(line[1:])
-			closeBlock(line)
+			nextLine := ""
+			if line == "" && i+1 < len(lines) {
+				nextLine = lines[i+1]
+			}
+			closeBlock(line, nextLine)
 		}
 		if line == "" {
 			continue
@@ -338,14 +355,21 @@ func parseZenUML(input string) (*ParseOutput, error) {
 		}
 
 		// new Object() or obj = new Object()
-		if m := zenNewRe.FindStringSubmatch(line); m != nil {
-			varName := m[1]
-			className := m[2]
-			hasBlock := m[3] == "{"
+		if m := zenNewRe.FindStringSubmatchIndex(line); m != nil {
+			varName := ""
+			if m[2] >= 0 {
+				varName = line[m[2]:m[3]]
+			}
+			className := line[m[4]:m[5]]
+			openIdx := m[1] - 1 // position of '('
+			args, hasBlock, ok := zenParseCallArgs(line, openIdx)
+			if !ok {
+				continue
+			}
 
 			ensure(className)
 
-			text := "new " + className + "()"
+			text := "new " + className + "(" + args + ")"
 			if varName != "" {
 				text = varName + " = " + text
 			}
@@ -391,12 +415,18 @@ func parseZenUML(input string) (*ParseOutput, error) {
 		}
 
 		// Sync message: A.method() or result = A.method() or A.method() {
-		if m := zenSyncRe.FindStringSubmatch(line); m != nil {
-			varName := m[1]
-			target := m[2]
-			methodName := m[3]
-			args := m[4]
-			hasBlock := m[5] == "{"
+		if m := zenSyncRe.FindStringSubmatchIndex(line); m != nil {
+			varName := ""
+			if m[2] >= 0 {
+				varName = line[m[2]:m[3]]
+			}
+			target := line[m[4]:m[5]]
+			methodName := line[m[6]:m[7]]
+			openIdx := m[1] - 1 // position of '('
+			args, hasBlock, ok := zenParseCallArgs(line, openIdx)
+			if !ok {
+				continue
+			}
 
 			from := caller
 			if from == "" {
@@ -431,13 +461,17 @@ func parseZenUML(input string) (*ParseOutput, error) {
 		}
 
 		// Self-call: method() or method(args) or method() {
-		if m := zenSelfCallRe.FindStringSubmatch(line); m != nil && caller != "" {
-			methodName := m[1]
-			args := m[2]
-			hasBlock := m[3] == "{"
+		if m := zenSelfCallRe.FindStringSubmatchIndex(line); m != nil && caller != "" {
+			methodName := line[m[2]:m[3]]
 
 			// Skip control keywords.
 			if zenControlKeywords[strings.ToLower(methodName)] {
+				continue
+			}
+
+			openIdx := m[1] - 1 // position of '('
+			args, hasBlock, ok := zenParseCallArgs(line, openIdx)
+			if !ok {
 				continue
 			}
 
@@ -469,7 +503,7 @@ func parseZenUML(input string) (*ParseOutput, error) {
 
 	// Close any unclosed blocks.
 	for len(stack) > 0 {
-		closeBlock("")
+		closeBlock("", "")
 	}
 
 	return &ParseOutput{Graph: g}, nil
@@ -500,6 +534,38 @@ func zenPreprocess(input string) []string {
 		lines = append(lines, without)
 	}
 	return lines
+}
+
+// zenFindBalancedParen finds the balanced closing ')' starting from the open
+// paren at position openIdx. Returns the index of the closing ')' or -1.
+func zenFindBalancedParen(line string, openIdx int) int {
+	depth := 0
+	for i := openIdx; i < len(line); i++ {
+		switch line[i] {
+		case '(':
+			depth++
+		case ')':
+			depth--
+			if depth == 0 {
+				return i
+			}
+		}
+	}
+	return -1
+}
+
+// zenParseCallArgs extracts the argument string and trailing content from a
+// line starting at the open paren position. Returns (args, hasBlock) where
+// hasBlock indicates a trailing '{'.
+func zenParseCallArgs(line string, openIdx int) (args string, hasBlock bool, ok bool) {
+	closeIdx := zenFindBalancedParen(line, openIdx)
+	if closeIdx < 0 {
+		return "", false, false
+	}
+	args = line[openIdx+1 : closeIdx]
+	rest := strings.TrimSpace(line[closeIdx+1:])
+	hasBlock = rest == "{"
+	return args, hasBlock, true
 }
 
 // zenStripLineComment removes // comments while respecting quoted strings.

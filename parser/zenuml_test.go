@@ -659,6 +659,207 @@ func TestZenStripLineComment(t *testing.T) {
 	}
 }
 
+func TestParseZenUMLNestedParens(t *testing.T) {
+	input := `zenuml
+@Starter(Client)
+Server.process(foo(bar)) {
+  Database.query(a, b(c))
+}
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	// Events: msg(Client→Server), activate(Server), msg(Server→Database), deactivate(Server)
+	wantKinds := []ir.SeqEventKind{
+		ir.EvMessage, ir.EvActivate, ir.EvMessage, ir.EvDeactivate,
+	}
+	if len(g.Events) != len(wantKinds) {
+		t.Fatalf("events = %d, want %d; got: %v", len(g.Events), len(wantKinds), eventKinds(g.Events))
+	}
+	for i, want := range wantKinds {
+		if g.Events[i].Kind != want {
+			t.Errorf("event[%d] = %v, want %v", i, g.Events[i].Kind, want)
+		}
+	}
+
+	// Verify args are preserved including nested parens.
+	msg0 := g.Events[0].Message
+	if msg0.Text != "process(foo(bar))" {
+		t.Errorf("msg[0].Text = %q, want %q", msg0.Text, "process(foo(bar))")
+	}
+	msg2 := g.Events[2].Message
+	if msg2.Text != "query(a, b(c))" {
+		t.Errorf("msg[2].Text = %q, want %q", msg2.Text, "query(a, b(c))")
+	}
+}
+
+func TestParseZenUMLNestedParensSelfCall(t *testing.T) {
+	input := `zenuml
+@Starter(Client)
+Server.handle() {
+  validate(inner(x))
+}
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	// Find the self-call message.
+	var selfCall *ir.SeqMessage
+	for _, ev := range g.Events {
+		if ev.Kind == ir.EvMessage && ev.Message != nil && ev.Message.From == "Server" && ev.Message.To == "Server" {
+			selfCall = ev.Message
+			break
+		}
+	}
+	if selfCall == nil {
+		t.Fatal("no self-call found")
+	}
+	if selfCall.Text != "validate(inner(x))" {
+		t.Errorf("text = %q, want %q", selfCall.Text, "validate(inner(x))")
+	}
+}
+
+func TestParseZenUMLNestedParensNew(t *testing.T) {
+	input := `zenuml
+@Starter(Client)
+obj = new Foo(bar(baz))
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	if len(g.Events) < 2 {
+		t.Fatalf("events = %d, want >= 2", len(g.Events))
+	}
+	if g.Events[0].Kind != ir.EvCreate {
+		t.Errorf("event[0] = %v, want EvCreate", g.Events[0].Kind)
+	}
+	msg := g.Events[1].Message
+	if msg.Text != "obj = new Foo(bar(baz))" {
+		t.Errorf("text = %q, want %q", msg.Text, "obj = new Foo(bar(baz))")
+	}
+}
+
+func TestParseZenUMLSplitLineElse(t *testing.T) {
+	// } on one line, else { on the next — should still produce FrameMiddle, not FrameEnd + ignored else.
+	input := `zenuml
+@Starter(Client)
+if(x) {
+  Server.allow()
+}
+else {
+  Server.deny()
+}
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	wantKinds := []ir.SeqEventKind{
+		ir.EvFrameStart,  // if(x)
+		ir.EvMessage,     // Server.allow()
+		ir.EvFrameMiddle, // else
+		ir.EvMessage,     // Server.deny()
+		ir.EvFrameEnd,
+	}
+	if len(g.Events) != len(wantKinds) {
+		t.Fatalf("events = %d, want %d; got: %v", len(g.Events), len(wantKinds), eventKinds(g.Events))
+	}
+	for i, want := range wantKinds {
+		if g.Events[i].Kind != want {
+			t.Errorf("event[%d] = %v, want %v", i, g.Events[i].Kind, want)
+		}
+	}
+}
+
+func TestParseZenUMLSplitLineCatch(t *testing.T) {
+	// } on one line, catch { on the next.
+	input := `zenuml
+@Starter(Client)
+try {
+  Server.riskyOp()
+}
+catch {
+  Logger.error()
+}
+finally {
+  Server.cleanup()
+}
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	wantKinds := []ir.SeqEventKind{
+		ir.EvFrameStart,  // try
+		ir.EvMessage,     // Server.riskyOp()
+		ir.EvFrameMiddle, // catch
+		ir.EvMessage,     // Logger.error()
+		ir.EvFrameMiddle, // finally
+		ir.EvMessage,     // Server.cleanup()
+		ir.EvFrameEnd,
+	}
+	if len(g.Events) != len(wantKinds) {
+		t.Fatalf("events = %d, want %d; got: %v", len(g.Events), len(wantKinds), eventKinds(g.Events))
+	}
+	for i, want := range wantKinds {
+		if g.Events[i].Kind != want {
+			t.Errorf("event[%d] = %v, want %v", i, g.Events[i].Kind, want)
+		}
+	}
+}
+
+func TestParseZenUMLSplitLineElseIf(t *testing.T) {
+	// } on one line, else if(...) { on the next.
+	input := `zenuml
+@Starter(A)
+if(x > 0) {
+  B.positive()
+}
+else if(x == 0) {
+  B.zero()
+}
+else {
+  B.negative()
+}
+`
+	out, err := Parse(input)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := out.Graph
+
+	wantKinds := []ir.SeqEventKind{
+		ir.EvFrameStart,  // if(x > 0)
+		ir.EvMessage,     // B.positive()
+		ir.EvFrameMiddle, // else if(x == 0)
+		ir.EvMessage,     // B.zero()
+		ir.EvFrameMiddle, // else
+		ir.EvMessage,     // B.negative()
+		ir.EvFrameEnd,
+	}
+	if len(g.Events) != len(wantKinds) {
+		t.Fatalf("events = %d, want %d; got: %v", len(g.Events), len(wantKinds), eventKinds(g.Events))
+	}
+	for i, want := range wantKinds {
+		if g.Events[i].Kind != want {
+			t.Errorf("event[%d] = %v, want %v", i, g.Events[i].Kind, want)
+		}
+	}
+}
+
 // eventKinds is a test helper that returns event kinds for error messages.
 func eventKinds(events []*ir.SeqEvent) []ir.SeqEventKind {
 	kinds := make([]ir.SeqEventKind, len(events))

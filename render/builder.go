@@ -178,4 +178,3 @@ func escapeXML(s string) string {
 func fmtFloat(f float32) string {
 	return strconv.FormatFloat(float64(f), 'f', -1, 32)
 }
-
