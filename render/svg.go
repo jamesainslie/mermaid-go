@@ -20,6 +20,12 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 		height = 1
 	}
 
+	// Compute accessibility attributes.
+	ariaLabel := l.Title
+	if ariaLabel == "" {
+		ariaLabel = l.Kind.String() + " diagram"
+	}
+
 	// Open <svg> tag. Set font-family so all <text> elements inherit it.
 	b.openTag("svg",
 		"xmlns", "http://www.w3.org/2000/svg",
@@ -27,6 +33,8 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 		"height", fmtFloat(height),
 		"viewBox", "0 0 "+fmtFloat(width)+" "+fmtFloat(height),
 		"font-family", th.FontFamily,
+		"role", "img",
+		"aria-label", ariaLabel,
 	)
 
 	// Arrow marker definitions.
@@ -36,6 +44,13 @@ func RenderSVG(l *layout.Layout, th *theme.Theme, cfg *config.Layout) string {
 	b.rect(0, 0, width, height, 0,
 		"fill", th.Background,
 	)
+
+	// Title element for accessibility (only when a diagram title is set).
+	if l.Title != "" {
+		b.openTag("title")
+		b.content(l.Title)
+		b.closeTag("title")
+	}
 
 	// Dispatch based on diagram data type.
 	switch l.Diagram.(type) {

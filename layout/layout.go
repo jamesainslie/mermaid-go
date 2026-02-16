@@ -8,8 +8,40 @@ import (
 )
 
 // ComputeLayout dispatches to the appropriate layout algorithm based on
-// the diagram kind. Currently only flowchart/graph layout is implemented.
+// the diagram kind and sets the diagram title on the result.
 func ComputeLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
+	l := computeLayout(g, th, cfg)
+	l.Title = diagramTitle(g)
+	return l
+}
+
+// diagramTitle extracts the title from diagram-kind-specific fields on the graph.
+func diagramTitle(g *ir.Graph) string {
+	switch g.Kind {
+	case ir.Pie:
+		return g.PieTitle
+	case ir.Quadrant:
+		return g.QuadrantTitle
+	case ir.Timeline:
+		return g.TimelineTitle
+	case ir.Gantt:
+		return g.GanttTitle
+	case ir.XYChart:
+		return g.XYTitle
+	case ir.Radar:
+		return g.RadarTitle
+	case ir.Treemap:
+		return g.TreemapTitle
+	case ir.Journey:
+		return g.JourneyTitle
+	default:
+		return ""
+	}
+}
+
+// computeLayout dispatches to the appropriate layout algorithm based on
+// the diagram kind.
+func computeLayout(g *ir.Graph, th *theme.Theme, cfg *config.Layout) *Layout {
 	switch g.Kind {
 	case ir.Flowchart:
 		return computeGraphLayout(g, th, cfg)
