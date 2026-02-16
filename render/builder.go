@@ -188,3 +188,12 @@ func escapeXML(s string) string {
 func fmtFloat(f float32) string {
 	return strconv.FormatFloat(float64(f), 'f', -1, 32)
 }
+
+// isTransparentColor reports whether a CSS color string already includes
+// transparency (rgba, hsla, or the "transparent" keyword).
+func isTransparentColor(c string) bool {
+	lower := strings.ToLower(c)
+	return strings.HasPrefix(lower, "rgba") ||
+		strings.HasPrefix(lower, "hsla") ||
+		lower == "transparent"
+}

@@ -33,11 +33,15 @@ func renderSeqBoxes(b *svgBuilder, sd *layout.SequenceData, th *theme.Theme) {
 		if fill == "" {
 			fill = "rgba(0,0,0,0.05)"
 		}
-		b.rect(box.X, box.Y, box.Width, box.Height, 4,
+		attrs := []string{
 			"fill", fill,
 			"stroke", th.ClusterBorder,
 			"stroke-width", "1",
-		)
+		}
+		if box.Color != "" && !isTransparentColor(box.Color) {
+			attrs = append(attrs, "fill-opacity", "0.15")
+		}
+		b.rect(box.X, box.Y, box.Width, box.Height, 4, attrs...)
 		if box.Label != "" {
 			b.text(box.X+8, box.Y+16, box.Label,
 				"fill", th.TextColor,
